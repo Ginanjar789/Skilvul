@@ -1,12 +1,14 @@
+require('dotenv').config();
+
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const { User } = require('./db/models');
 
-const SALT = 8;
-const PORT = 3000;
-const JWT_SECRET = 'skilvulupinipin';
+const SALT = process.env.PASSWORD_SALT;
+const PORT = process.env.PORT;
+const JWT_SECRET = process.env.JWT_SECRET;
 
 const app = express();
 
