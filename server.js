@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 
 const { User } = require('./db/models');
 
-const SALT = process.env.PASSWORD_SALT;
+const SALT = Number(process.env.PASSWORD_SALT);
 const PORT = process.env.PORT;
 const JWT_SECRET = process.env.JWT_SECRET;
 
