@@ -4,7 +4,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const { User } = require('./db/models');
+const { User, Todo } = require('./db/models');
 
 const SALT = Number(process.env.PASSWORD_SALT);
 const PORT = process.env.PORT;
@@ -96,7 +96,47 @@ app.post('/login', async function(req, res) {
     });
 });
 
-app.post('/todos', async function(req, res) {});
+app.post('/todos', async function(req, res) {
+    const token = req.header('authorization');
+
+    let user = null;
+
+    try {
+        const decode = jwt.verify(token, JWT_SECRET);
+        user = await User.findOne({
+            where: {
+                id: decode.sub,
+            },
+        });
+
+        if (!user) {
+            res.status(403);
+            res.json({
+                error: 'invalid token',
+            });
+
+            return;
+        }
+    } catch (error) {
+        res.status(403);
+        res.json({
+            error: 'token invalid',
+        });
+
+        return;
+    }
+
+    const task = req.body.task;
+
+    await Todo.create({
+        user_id: user.id,
+        task,
+        do_at: new Date(),
+    });
+
+    res.json(true);
+});
+
 app.get('/todos', async function(req, res) {});
 app.get('/todos/:id', async function(req, res) {});
 app.put('/todos/:id', async function(req, res) {});
