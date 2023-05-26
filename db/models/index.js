@@ -14,6 +14,17 @@ const connection = new Sequelize({
 const User = UserFn(connection);
 const Todo = TodoFn(connection);
 
+Todo.hasOne(User, {
+    sourceKey: 'user_id',
+    foreignKey: 'id',
+    as: 'user'
+});
+User.hasMany(Todo, {
+    sourceKey: 'id',
+    foreignKey: 'user_id',
+    as: 'todos',
+});
+
 module.exports = {
     User,
     Todo,
